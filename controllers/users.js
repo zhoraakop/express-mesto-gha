@@ -40,10 +40,7 @@ const getUserById = (req, res) => {
 
 const getUsers = (req, res) => {
   userModel.find().then((users) => {
-    if (!users) {
-      return res.status(HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
-    }
-    return res.status(HTTP_STATUS_OK).send(users);
+    res.status(HTTP_STATUS_OK).send(users);
   }).catch(() => {
     res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
   });
