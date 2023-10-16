@@ -19,33 +19,30 @@ const createUser = (req, res) => {
       if (err.name === 'ValidationError') {
         return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: err.message });
       }
-      return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
+      return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
 const getUserById = (req, res) => {
   const id = req.params.userId;
   userModel.findById(id).then((user) => {
-    if (!user) {
-      return res.status(HTTP_STATUS_NOT_FOUND).send({ message: 'User not Found' });
-    }
-    return res.status(HTTP_STATUS_OK).send(user);
+    res.status(HTTP_STATUS_OK).send(user);
   }).catch((err) => {
     if (err.name === 'CastError') {
-      return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+      return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Пользователь с таким id не найден' });
     }
-    return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
+    return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
   });
 };
 
 const getUsers = (req, res) => {
   userModel.find().then((users) => {
     if (!users) {
-      return res.status(HTTP_STATUS_NOT_FOUND).send({ message: 'Users not Found' });
+      return res.status(HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
     }
     return res.status(HTTP_STATUS_OK).send(users);
   }).catch(() => {
-    res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
+    res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
   });
 };
 
@@ -61,13 +58,14 @@ const updateUserById = (req, res) => {
     })
     .then((user) => res.status(HTTP_STATUS_OK).send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(HTTP_STATUS_NOT_FOUND).send({ message: 'Invalid Id' });
+      console.log(err);
+      if (err.message === 'NotFoundError') {
+        return res.status(HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
       }
       if (err.name === 'ValidationError') {
-        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: err.message });
+        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Переданы некорреткные данные' });
       }
-      return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
+      return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
@@ -83,10 +81,13 @@ const updateUserAvatar = (req, res) => {
     })
     .then((user) => res.status(HTTP_STATUS_OK).send(user))
     .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Invalid Id' });
+      if (err.message === 'NotFoundError') {
+        return res.status(HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
       }
-      return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
+      if (err.name === 'ValidationError') {
+        return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Переданы некорреткные данные' });
+      }
+      return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'На сервере произошла ошибка' });
     });
 };
 
