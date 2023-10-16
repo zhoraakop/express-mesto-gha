@@ -25,9 +25,14 @@ const createUser = (req, res) => {
 
 const getUserById = (req, res) => {
   const id = req.params.userId;
-  userModel.findById(id).then((user) => {
+  userModel.findById(id).orFail(() => {
+    throw new Error('NotFoundError');
+  }).then((user) => {
     res.status(HTTP_STATUS_OK).send(user);
   }).catch((err) => {
+    if (err.message === 'NotFoundError') {
+      return res.status(HTTP_STATUS_NOT_FOUND).send({ message: 'Пользователь с таким id не найден' });
+    }
     if (err.name === 'CastError') {
       return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: 'Пользователь с таким id не найден' });
     }
