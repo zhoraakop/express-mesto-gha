@@ -39,7 +39,7 @@ const deleteCard = (req, res) => {
       if (err.message === 'NotFoundError') {
         return res.status(HTTP_STATUS_NOT_FOUND).send({ message: err.message });
       }
-      if (err.name === 'Error') {
+      if (err.name === 'CastError') {
         return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: err.message });
       }
       return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
@@ -61,7 +61,7 @@ const putLikeCard = (req, res) => {
       if (err.message === 'NotFoundError') {
         res.status(HTTP_STATUS_NOT_FOUND).send({ message: err.message });
       }
-      if (err.name === 'Error') {
+      if (err.name === 'CastError') {
         return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: err.message });
       }
       return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
@@ -82,9 +82,10 @@ const deleteLikeCard = (req, res) => {
       if (err.message === 'NotFoundError') {
         return res.status(HTTP_STATUS_NOT_FOUND).send({ message: err.message });
       }
-      if (err.name === 'Error') {
+      if (err.name === 'CastError') {
         return res.status(HTTP_STATUS_BAD_REQUEST).send({ message: err.message });
       }
+      console.log(err);
       return res.status(HTTP_STATUS_INTERNAL_SERVER_ERROR).send({ message: 'Server Error' });
     });
 };
