@@ -1,7 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const userRouter = require('./routes/users');
-const cardsRouter = require('./routes/cards');
+const router = require('./routes/index');
 const notFoundPage = require('./routes/notFoundPage');
 
 mongoose
@@ -13,16 +12,7 @@ const app = express();
 const { PORT = 3000 } = process.env;
 
 app.use(express.json());
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '652d246ec9ffd6b40f9960be',
-  };
-  next();
-});
-
-app.use(userRouter);
-app.use(cardsRouter);
+app.use(router);
 app.use(notFoundPage);
 
 app.listen(PORT);
