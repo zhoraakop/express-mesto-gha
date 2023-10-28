@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { celebrate } = require('celebrate');
+const { errors } = require('celebrate');
 const auth = require('../middlewares/auth');
 
 const { login, createUser } = require('../controllers/users');
@@ -14,7 +14,7 @@ router.use(auth);
 
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);
-router.use(celebrate());
+router.use(errors());
 router.use(errorHandler);
 
 module.exports = router;
