@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const validator = require('validator');
 
 const { UnauthorizedError } = require('../errors/Unauthorized-error');
 
@@ -8,6 +9,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    validate: {
+      validator: validator.isEmail,
+      message: 'Неправильная почта',
+    },
   },
   password: {
     type: String,
@@ -32,6 +37,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    validate: {
+      validator: validator.isURL,
+      message: 'Некорректная ссылка',
+    },
   },
 });
 
