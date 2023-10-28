@@ -4,6 +4,7 @@ const {
 } = require('http2').constants;
 
 const BadRequestError = require('../errors/BadRequestError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 const cardModel = require('../models/card');
 
@@ -34,8 +35,11 @@ const deleteCard = (req, res, next) => {
     .orFail(() => {
       throw new Error('NotFoundError');
     })
-    .then(() => {
-      res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
+    .then((card) => {
+      if (!card.owner.equals(req.user._id)) {
+        return next(new ForbiddenError('Вы не можете удалить чужую карточку'));
+      }
+      return res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
     }).catch((err) => {
       if (err.message === 'NotFoundError') {
         return next(new NotFoundError('Карточка не найдена'));
