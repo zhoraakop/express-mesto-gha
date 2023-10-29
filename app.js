@@ -1,9 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const { errors } = require('celebrate');
 const router = require('./routes/index');
 const notFoundPage = require('./routes/notFoundPage');
 const errorHandler = require('./middlewares/error-handler');
-const { errors } = require('celebrate');
 
 mongoose
   .connect('mongodb://127.0.0.1:27017/mestodb', {

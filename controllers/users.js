@@ -8,11 +8,10 @@ const {
   HTTP_STATUS_CREATED,
 } = require('http2').constants;
 
-const saltRounds = 10;
-
 const userModel = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
 const BadRequestError = require('../errors/BadRequestError');
+const ConflictError = require('../errors/ConflictError');
 
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -32,7 +31,10 @@ const createUser = (req, res, next) => {
     about,
     avatar,
   } = req.body;
-  bcrypt.hash(password, saltRounds)
+  if (!email || !password) {
+    return next(new BadRequestError('Поле email или password не могут быть пустыми'));
+  }
+  return bcrypt.hash(password, 10)
     .then((hash) => {
       userModel.create({
         email,
@@ -41,10 +43,20 @@ const createUser = (req, res, next) => {
         about,
         avatar,
       }).then((data) => {
-        res.status(HTTP_STATUS_CREATED).send(data);
+        res.status(HTTP_STATUS_CREATED).send({
+          email: data.email,
+          password: data.password,
+          name: data.name,
+          about: data.about,
+          avatar: data.avatar,
+          _id: data._id,
+        });
       }).catch((err) => {
         if (err.name === 'ValidationError') {
           return next(new BadRequestError('Передан некорректные данные'));
+        }
+        if (err.code === 11000) {
+          return next(new ConflictError('Пользователь с таким email уже зарегистрирован'));
         }
         return next(err);
       });
