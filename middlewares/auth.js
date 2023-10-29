@@ -4,7 +4,7 @@ const UnauthorizedError = require('../errors/Unauthorized-error');
 
 const auth = (req, res, next) => {
   let payload;
-  const token = req.headers.authorization;
+  const token = req.headers;
 
   if (!token) {
     return next(new UnauthorizedError('Необходима авторизация'));
