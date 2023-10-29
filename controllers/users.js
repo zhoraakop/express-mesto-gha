@@ -18,6 +18,7 @@ const login = (req, res, next) => {
   userModel.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+      req.headers.authorization = token;
       res.send({ token });
     })
     .catch((err) => next(err));
