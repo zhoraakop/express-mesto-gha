@@ -35,11 +35,8 @@ const deleteCard = (req, res, next) => {
     .orFail(() => {
       throw new Error('NotFoundError');
     })
-    .then((card) => {
-      if (!card.owner.equals(req.user._id)) {
-        return next(new ForbiddenError('Вы не можете удалить чужую карточку'));
-      }
-      return res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
+    .then(() => {
+      res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
     }).catch((err) => {
       if (err.message === 'NotFoundError') {
         return next(new NotFoundError('Карточка не найдена'));
