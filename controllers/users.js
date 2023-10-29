@@ -40,7 +40,12 @@ const createUser = (req, res, next) => {
         about,
         avatar,
       }).then((data) => {
-        res.status(HTTP_STATUS_CREATED).send(data);
+        res.status(HTTP_STATUS_CREATED).send({
+          email: data.email,
+          name: data.name,
+          about: data.about,
+          avatar: data.avatar,
+        });
       }).catch((err) => {
         if (err.name === 'ValidationError') {
           return next(new BadRequestError('Передан некорректные данные'));
