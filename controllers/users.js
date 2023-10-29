@@ -101,11 +101,11 @@ const getUsers = (req, res, next) => {
 };
 
 const updateUserById = (req, res, next) => {
-  const { name, about } = req.body;
+  const data = req.body;
   const id = req.user._id;
   userModel.findByIdAndUpdate(
     id,
-    { name, about },
+    data,
     { new: true, runValidators: true },
   )
     .orFail(() => {
