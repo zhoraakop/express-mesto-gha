@@ -4,7 +4,6 @@ const {
 } = require('http2').constants;
 
 const BadRequestError = require('../errors/BadRequestError');
-const ForbiddenError = require('../errors/ForbiddenError');
 const NotFoundError = require('../errors/NotFoundError');
 const cardModel = require('../models/card');
 

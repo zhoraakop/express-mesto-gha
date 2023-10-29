@@ -31,10 +31,7 @@ const createUser = (req, res, next) => {
     about,
     avatar,
   } = req.body;
-  if (!email || !password) {
-    return next(new BadRequestError('Поле email или password не могут быть пустыми'));
-  }
-  return bcrypt.hash(password, 10)
+  bcrypt.hash(password, 10)
     .then((hash) => {
       userModel.create({
         email,
