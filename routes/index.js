@@ -6,8 +6,8 @@ const userRouter = require('../models/user');
 const cardRouter = require('../models/card');
 const { validationCreateUser, validationLog } = require('../middlewares/validation');
 
-router.post('/signup', createUser, validationCreateUser);
-router.post('/signin', login, validationLog);
+router.post('/signup', validationCreateUser, createUser);
+router.post('/signin', validationLog, login);
 
 router.use(auth);
 
