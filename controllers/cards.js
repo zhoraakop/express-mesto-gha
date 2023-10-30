@@ -36,6 +36,9 @@ const deleteCard = (req, res, next) => {
   const { _id: userId } = req.user;
 
   cardModel.findById(cardId)
+    .orFail(() => {
+      throw new Error('NotFoundError');
+    })
     .then((card) => {
       if (userId !== card.owner.toString()) {
         throw new ForbiddenError('Можно удалять только собственные посты');
