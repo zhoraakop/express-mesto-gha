@@ -5,6 +5,7 @@ const {
 
 const BadRequestError = require('../errors/BadRequestError');
 const NotFoundError = require('../errors/NotFoundError');
+const ForbiddenError = require('../errors/ForbiddenError');
 const cardModel = require('../models/card');
 
 const getAllCards = (req, res, next) => {
@@ -19,6 +20,7 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   cardModel.create({ name, link, owner })
+    .then((card) => card.populate('owner'))
     .then((card) => {
       res.status(HTTP_STATUS_CREATED).send(card);
     }).catch((err) => {
@@ -30,12 +32,16 @@ const createCard = (req, res, next) => {
 };
 
 const deleteCard = (req, res, next) => {
-  cardModel.findByIdAndRemove(req.params.cardId)
-    .orFail(() => {
-      throw new Error('NotFoundError');
-    })
-    .then(() => {
-      res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' });
+  const { cardId } = req.params;
+  const { _id: userId } = req.user;
+
+  cardModel.findById(cardId)
+    .then((card) => {
+      if (userId !== card.owner.toString()) {
+        throw new ForbiddenError('Можно удалять только собственные посты');
+      }
+      return cardModel.findByIdAndRemove(cardId)
+        .then(() => res.status(HTTP_STATUS_OK).send({ message: 'Карточка удалена' }));
     }).catch((err) => {
       if (err.message === 'NotFoundError') {
         return next(new NotFoundError('Карточка не найдена'));

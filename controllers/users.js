@@ -64,20 +64,15 @@ const createUser = (req, res, next) => {
 };
 
 const getCurrentUser = (req, res, next) => {
-  userModel.findById(req.user._id)
+  const userId = req.user._id;
+  userModel.findById(userId)
     .then((user) => {
-      if (!user) {
-        return next(new NotFoundError('Пользователь не найден'));
-      }
-      return res.send({
-        email: user.email,
-        name: user.name,
-        about: user.about,
-        avatar: user.avatar,
-        _id: user._id,
-      });
+      res.send(user);
     })
     .catch((err) => {
+      if (err.name === 'NotFoundError') {
+        return next(new NotFoundError('Пользователь не найден'));
+      }
       if (err.name === 'CastError' || err.name === 'ValidationError') {
         return next(new BadRequestError('Передан некорректные данные'));
       }
