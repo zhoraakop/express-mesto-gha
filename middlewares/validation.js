@@ -11,7 +11,7 @@ const validationLog = celebrate({
 
 const validationUserId = celebrate({
   [Segments.PARAMS]: {
-    userId: Joi.string().length(24).required(),
+    userId: Joi.string().length(24).required().hex(),
   },
 });
 

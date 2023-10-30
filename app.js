@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const { errors } = require('celebrate');
 const cookieParser = require('cookie-parser');
 const router = require('./routes/index');
-const notFoundPage = require('./routes/notFoundPage');
 const errorHandler = require('./middlewares/error-handler');
 
 mongoose
@@ -17,7 +16,6 @@ const { PORT = 3000 } = process.env;
 app.use(express.json());
 app.use(cookieParser());
 app.use(router);
-app.use(notFoundPage);
 app.use(errors());
 app.use(errorHandler);
 

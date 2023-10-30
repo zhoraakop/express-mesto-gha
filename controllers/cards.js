@@ -20,7 +20,6 @@ const createCard = (req, res, next) => {
   const { name, link } = req.body;
   const owner = req.user._id;
   cardModel.create({ name, link, owner })
-    .then((card) => card.populate('owner'))
     .then((card) => {
       res.status(HTTP_STATUS_CREATED).send(card);
     }).catch((err) => {

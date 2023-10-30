@@ -73,9 +73,6 @@ const getCurrentUser = (req, res, next) => {
       if (err.name === 'NotFoundError') {
         return next(new NotFoundError('Пользователь не найден'));
       }
-      if (err.name === 'CastError' || err.name === 'ValidationError') {
-        return next(new BadRequestError('Передан некорректные данные'));
-      }
       return next(err);
     });
 };
@@ -102,11 +99,11 @@ const getUsers = (req, res, next) => {
 };
 
 const updateUserById = (req, res, next) => {
-  const data = req.body;
+  const { name, about } = req.body;
   const id = req.user._id;
   userModel.findByIdAndUpdate(
     id,
-    data,
+    { name, about },
     { new: true, runValidators: true },
   )
     .orFail(() => {
