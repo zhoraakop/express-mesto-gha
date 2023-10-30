@@ -18,7 +18,7 @@ const login = (req, res, next) => {
   userModel.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-      return res.cookie('jwt', token, {
+      res.cookie('jwt', token, {
         maxAge: 3600000,
         httpOnly: true,
         sameSite: true,
@@ -103,7 +103,7 @@ const getUserById = (req, res, next) => {
 };
 
 const getUsers = (req, res, next) => {
-  userModel.find().then((users) => res.send(users)).catch(next);
+  userModel.find({}).then((users) => res.send(users)).catch(next);
 };
 
 const updateUserById = (req, res, next) => {
