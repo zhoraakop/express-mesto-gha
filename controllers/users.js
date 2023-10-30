@@ -19,10 +19,9 @@ const login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
       return res.cookie('jwt', token, {
-        // token - наш JWT токен, который мы отправляем
         maxAge: 3600000,
         httpOnly: true,
-        sameSite: true, // указали браузеру посылать куки, только если запрос с того же домена
+        sameSite: true,
       }).send({ token });
     })
     .catch((err) => next(err));
@@ -104,7 +103,7 @@ const getUserById = (req, res, next) => {
 };
 
 const getUsers = (req, res, next) => {
-  userModel.find({}).then((users) => res.send(users)).catch(next);
+  userModel.find().then((users) => res.send(users)).catch(next);
 };
 
 const updateUserById = (req, res, next) => {
