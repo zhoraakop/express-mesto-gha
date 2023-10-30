@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const auth = require('../middlewares/auth');
+const cookieParser = require('cookie-parser');
 
 const { login, createUser } = require('../controllers/users');
 const userRouter = require('../models/user');
@@ -8,9 +9,8 @@ const { validationCreateUser, validationLog } = require('../middlewares/validati
 
 router.post('/signup', validationCreateUser, createUser);
 router.post('/signin', validationLog, login);
-
-router.use(auth);
-router.use('/users', userRouter);
-router.use('/cards', cardRouter);
+router.use(cookieParser);
+router.use('/users', auth, userRouter);
+router.use('/cards', auth, cardRouter);
 
 module.exports = router;

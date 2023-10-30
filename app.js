@@ -14,9 +14,10 @@ const app = express();
 const { PORT = 3000 } = process.env;
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(router);
+app.use(notFoundPage);
 app.use(errors());
 app.use(errorHandler);
-app.use(notFoundPage);
 
 app.listen(PORT);

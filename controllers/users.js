@@ -104,9 +104,7 @@ const getUserById = (req, res, next) => {
 };
 
 const getUsers = (req, res, next) => {
-  userModel.find({}).then((users) => {
-    res.send({ data: users });
-  }).catch(next);
+  userModel.find({}).then((users) => res.send(users)).catch(next);
 };
 
 const updateUserById = (req, res, next) => {
