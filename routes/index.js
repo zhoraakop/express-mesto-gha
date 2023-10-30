@@ -10,7 +10,6 @@ router.post('/signup', validationCreateUser, createUser);
 router.post('/signin', validationLog, login);
 
 router.use(auth);
-
 router.use('/users', userRouter);
 router.use('/cards', cardRouter);
 

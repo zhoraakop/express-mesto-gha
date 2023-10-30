@@ -18,8 +18,12 @@ const login = (req, res, next) => {
   userModel.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-      req.headers.authorization = token;
-      res.send({ token });
+      return res.cookie('jwt', token, {
+        // token - наш JWT токен, который мы отправляем
+        maxAge: 3600000,
+        httpOnly: true,
+        sameSite: true, // указали браузеру посылать куки, только если запрос с того же домена
+      }).send({ token });
     })
     .catch((err) => next(err));
 };
@@ -46,6 +50,7 @@ const createUser = (req, res, next) => {
           name: data.name,
           about: data.about,
           avatar: data.avatar,
+          _id: data._id,
         });
       }).catch((err) => {
         if (err.name === 'ValidationError') {
@@ -99,11 +104,9 @@ const getUserById = (req, res, next) => {
 };
 
 const getUsers = (req, res, next) => {
-  userModel.find().then((users) => {
-    res.status(HTTP_STATUS_OK).send(users);
-  }).catch((err) => (
-    next(err)
-  ));
+  userModel.find({}).then((users) => {
+    res.send({ data: users });
+  }).catch(next);
 };
 
 const updateUserById = (req, res, next) => {
